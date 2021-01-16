@@ -1,0 +1,13 @@
+rocket:
+  enabled: true
+  url: https://rocket-chat.autodealer.ru
+  authToken: <authToken>
+  userId: <userId>
+spotify:
+  accessToken: <accessToken>
+telegram:
+  botUsername: <botUsername>
+  botToken: <botToken>
+logging:
+  level:
+    dev.makarov: debug
