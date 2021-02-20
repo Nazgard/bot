@@ -1,7 +1,7 @@
 package dev.makarov.bot.telegram;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -13,34 +13,29 @@ import javax.annotation.PostConstruct;
 import java.util.List;
 
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class TelegramBot extends TelegramLongPollingBot {
-
-    private static final Logger LOGGER = LogManager.getLogger(TelegramBot.class);
 
     private final TelegramConfiguration configuration;
     private final Router router;
 
-    public TelegramBot(TelegramConfiguration configuration, Router router) {
-        this.configuration = configuration;
-        this.router = router;
-    }
-
     @PostConstruct
     public void postConstruct() {
-        LOGGER.info("TelegramBot loaded");
+        log.info("TelegramBot loaded");
     }
 
     @Override
     public void onUpdateReceived(Update update) {
-        LOGGER.debug("update received");
-        LOGGER.debug("route");
+        log.debug("update received");
+        log.debug("route");
         List<SendMessage> apiMethods = router.route(update);
-        LOGGER.debug("routed");
+        log.debug("routed");
         for (SendMessage apiMethod : apiMethods) {
             try {
                 execute(apiMethod);
             } catch (TelegramApiException e) {
-                LOGGER.error(e.getMessage(), e);
+                log.error(e.getMessage(), e);
             }
         }
     }
@@ -62,11 +57,11 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     @Override
     public void onRegister() {
-        LOGGER.info("Telegram Bot registered");
+        log.info("Telegram Bot registered");
     }
 
     @Override
     public void onClosing() {
-        LOGGER.info("Telegram Bot closing");
+        log.info("Telegram Bot closing");
     }
 }

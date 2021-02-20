@@ -1,8 +1,8 @@
 package dev.makarov.bot.telegram;
 
 import dev.makarov.bot.telegram.datecalc.DateCalculateService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -15,16 +15,12 @@ import java.util.Optional;
 
 import static org.telegram.telegrambots.meta.api.objects.EntityType.BOTCOMMAND;
 
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class Router {
 
-    private static final Logger LOGGER = LogManager.getLogger(Router.class);
-
     private final DateCalculateService calcService;
-
-    public Router(DateCalculateService calcService) {
-        this.calcService = calcService;
-    }
 
     public List<SendMessage> route(Update update) {
         List<SendMessage> apiMethods = new ArrayList<>();
@@ -42,7 +38,7 @@ public class Router {
                             case DD: apiMethods.addAll(calcService.calc(update));
                         }
                     } catch (NotCommandException e) {
-                        LOGGER.debug("Command not resolved {}", messageEntity.getText());
+                        log.debug("Command not resolved {}", messageEntity.getText());
                     }
                 });
         return apiMethods;

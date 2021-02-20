@@ -6,8 +6,7 @@ import com.wrapper.spotify.model_objects.miscellaneous.CurrentlyPlaying;
 import com.wrapper.spotify.model_objects.specification.ArtistSimplified;
 import com.wrapper.spotify.model_objects.specification.Track;
 import dev.makarov.bot.spotify.SpotifyConfiguration;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.util.Arrays;
 
+@Slf4j
 @Service
 @ConditionalOnProperty(
         value = "rocket.enabled",
@@ -22,8 +22,6 @@ import java.util.Arrays;
         matchIfMissing = true
 )
 public class RocketBot {
-
-    private static final Logger LOGGER = LogManager.getLogger(RocketBot.class);
 
     private final RocketApi rocketApi;
     private final SpotifyApi spotifyApi;
@@ -45,7 +43,7 @@ public class RocketBot {
 
     @PostConstruct
     public void postConstruct() {
-        LOGGER.info("RocketBot loaded");
+        log.info("RocketBot loaded");
     }
 
     @Scheduled(fixedDelay = 10_000)
@@ -62,15 +60,15 @@ public class RocketBot {
                             Arrays.stream(track.getArtists()).map(ArtistSimplified::getName).toArray(CharSequence[]::new));
                     String status = String.format("%s %s - %s", RocketSongEmotion.getEmotion(songName), artists, songName);
                     rocketApi.setStatus(status);
-                    LOGGER.debug("Статус обновлен на {}", status);
+                    log.debug("Статус обновлен на {}", status);
                 }
             } else {
                 rocketApi.setStatus("");
-                LOGGER.debug("Статус сброшен");
+                log.debug("Статус сброшен");
             }
 
         } catch (Exception e) {
-            LOGGER.error("Что-то пошло не так с обновлением статуса", e);
+            log.error("Что-то пошло не так с обновлением статуса", e);
         }
     }
 

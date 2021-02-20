@@ -1,8 +1,7 @@
 package dev.makarov.bot.rocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -12,11 +11,11 @@ import java.nio.charset.StandardCharsets;
 import static java.net.http.HttpRequest.BodyPublishers.ofString;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
 
+@Slf4j
 public class RocketApi {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
     private static final String POSTFIX = "/api/v1/";
-    private static final Logger LOGGER = LogManager.getLogger(RocketApi.class);
 
     private String url;
     private String authToken;
@@ -37,7 +36,7 @@ public class RocketApi {
                     .build();
             client.send(request, ofString(StandardCharsets.UTF_8));
         } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
     }
 

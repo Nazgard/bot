@@ -2,6 +2,7 @@ package dev.makarov.bot.telegram.lostfilm;
 
 import dev.makarov.bot.telegram.lostfilm.dto.LFItem;
 import dev.makarov.bot.utils.FixedArrayList;
+import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import java.util.List;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
 
 @Service
+@RequiredArgsConstructor
 public class RssBot {
 
     private static final String URL = "https://lostfilm.tv/rss.xml";
