@@ -1,24 +1,27 @@
 package dev.makarov.bot.telegram;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class TelegramBot extends TelegramLongPollingBot {
 
     private final TelegramConfiguration configuration;
     private final Router router;
+
+    public TelegramBot(TelegramConfiguration configuration, Router router) {
+        super(new PersonalBotOptions());
+        this.configuration = configuration;
+        this.router = router;
+    }
 
     @PostConstruct
     public void postConstruct() {
@@ -38,11 +41,6 @@ public class TelegramBot extends TelegramLongPollingBot {
                 log.error(e.getMessage(), e);
             }
         }
-    }
-
-    @Override
-    public void clearWebhook() throws TelegramApiRequestException {
-
     }
 
     @Override

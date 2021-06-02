@@ -1,6 +1,7 @@
 package dev.makarov.bot.telegram;
 
 import dev.makarov.bot.telegram.datecalc.DateCalculateService;
+import dev.makarov.bot.lostfilm.RssBot;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import static org.telegram.telegrambots.meta.api.objects.EntityType.BOTCOMMAND;
 public class Router {
 
     private final DateCalculateService calcService;
+    private final RssBot rssBot;
 
     public List<SendMessage> route(Update update) {
         List<SendMessage> apiMethods = new ArrayList<>();
@@ -35,7 +37,12 @@ public class Router {
                     try {
                         Command command = Command.parseCommand(messageEntity.getText());
                         switch (command) {
-                            case DD: apiMethods.addAll(calcService.calc(update));
+                            case DD:
+                                apiMethods.addAll(calcService.calc(update));
+                                break;
+//                            case RSS:
+//                                apiMethods.addAll(rssBot.getState());
+//                                break;
                         }
                     } catch (NotCommandException e) {
                         log.debug("Command not resolved {}", messageEntity.getText());

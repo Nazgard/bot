@@ -8,6 +8,8 @@ spotify:
 telegram:
   botUsername: <botUsername>
   botToken: <botToken>
+lostfilm:
+  cookie: lf_session=<id>
 logging:
   level:
     dev.makarov: debug
