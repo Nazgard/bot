@@ -11,7 +11,9 @@ import java.util.List;
 public class LFParsedItem {
 
     private String name;
-    private List<LFParsedItemTorrents> torrents;
+    private List<LFParsedItemTorrent> torrents;
     private Instant created;
+    private Instant pubDate;
+    private String originUrl;
 
 }

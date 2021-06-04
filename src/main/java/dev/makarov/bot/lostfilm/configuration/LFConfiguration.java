@@ -1,4 +1,4 @@
-package dev.makarov.bot.lostfilm;
+package dev.makarov.bot.lostfilm.configuration;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

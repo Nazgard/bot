@@ -13,3 +13,9 @@ lostfilm:
 logging:
   level:
     dev.makarov: debug
+spring:
+  data:
+    mongodb:
+      uri: <dbUri>
+      username: <dbUser>
+      password: <dbPassword>

@@ -1,4 +1,4 @@
-package dev.makarov.bot.lostfilm.entity;
+package dev.makarov.bot.lostfilm.persistance.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,5 +23,7 @@ public class LFEntry {
     private String name;
     private List<LFEntryTorrent> torrents;
     private Instant created;
+    private Instant pubDate;
+    private String originUrl;
 
 }

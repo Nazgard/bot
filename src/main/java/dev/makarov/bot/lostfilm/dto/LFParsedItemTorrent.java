@@ -7,7 +7,7 @@ import lombok.ToString;
 
 @Data
 @Builder
-public class LFParsedItemTorrents {
+public class LFParsedItemTorrent {
 
     private String name;
     private String quality;

@@ -1,9 +1,9 @@
-package dev.makarov.bot.lostfilm;
+package dev.makarov.bot.lostfilm.persistance;
 
 import dev.makarov.bot.lostfilm.dto.LFParsedItem;
-import dev.makarov.bot.lostfilm.entity.LFEntry;
-import dev.makarov.bot.lostfilm.entity.LFEntryTorrent;
-import dev.makarov.bot.lostfilm.repository.LFEntryRepository;
+import dev.makarov.bot.lostfilm.persistance.entity.LFEntry;
+import dev.makarov.bot.lostfilm.persistance.entity.LFEntryTorrent;
+import dev.makarov.bot.lostfilm.persistance.repository.LFEntryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
@@ -12,7 +12,6 @@ import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -26,9 +25,8 @@ public class LFPersisterImpl implements LFPersister {
 
     @Override
     public void persist(LFParsedItem item) {
-        Optional<LFEntry> entryOptional = repository.findByName(item.getName());
-        if (entryOptional.isPresent()) {
-            log.info("LFEntry {} already present", item.getName());
+        if (repository.existsByName(item.getName())) {
+            return;
         }
         LFEntry entry = LFEntry.builder()
                 .id(ObjectId.get())
@@ -45,6 +43,8 @@ public class LFPersisterImpl implements LFPersister {
                                 .build())
                         .collect(Collectors.toList()))
                 .created(item.getCreated())
+                .pubDate(item.getPubDate())
+                .originUrl(item.getOriginUrl())
                 .build();
         repository.save(entry);
         log.debug("LFEntry {} persisted", item.getName());

@@ -1,6 +1,8 @@
-package dev.makarov.bot.lostfilm;
+package dev.makarov.bot.lostfilm.background;
 
+import dev.makarov.bot.lostfilm.persistance.LFPersister;
 import dev.makarov.bot.lostfilm.dto.LFParsedItem;
+import dev.makarov.bot.lostfilm.queue.LFParsedItemQueue;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.scheduling.annotation.Scheduled;

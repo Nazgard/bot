@@ -1,8 +1,13 @@
-package dev.makarov.bot.lostfilm;
+package dev.makarov.bot.lostfilm.background;
 
+import dev.makarov.bot.lostfilm.configuration.LFRestTemplate;
 import dev.makarov.bot.lostfilm.dto.LFItem;
 import dev.makarov.bot.lostfilm.dto.LFParsedItem;
-import dev.makarov.bot.lostfilm.dto.LFParsedItemTorrents;
+import dev.makarov.bot.lostfilm.dto.LFParsedItemTorrent;
+import dev.makarov.bot.lostfilm.queue.LFItemQueue;
+import dev.makarov.bot.lostfilm.queue.LFParsedItemQueue;
+import lombok.Builder;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -16,9 +21,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.PostConstruct;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,18 +33,12 @@ import java.util.regex.Pattern;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class TorrentFileFetcher {
+public class LFTorrentFileFetcher {
 
-    private final RestTemplate restTemplate = new RestTemplate();
     private final HttpHeaders headers = new HttpHeaders();
+    private final LFRestTemplate restTemplate;
     private final LFItemQueue inputQueue;
     private final LFParsedItemQueue outputQueue;
-    private final LFConfiguration configuration;
-
-    @PostConstruct
-    public void postConstruct() {
-        headers.add("Cookie", configuration.getCookie());
-    }
 
     @SneakyThrows
     @Scheduled(fixedDelay = 100)
@@ -56,33 +53,48 @@ public class TorrentFileFetcher {
                 .ifPresent(outputQueue::offer);
     }
 
-    private Optional<Long> parseEpisodePage(LFItem item) {
+    private Optional<FetchLfItem> parseEpisodePage(LFItem item) {
         String url = item.getLink().replaceFirst("/mr/", "/");
-        return getMatcher("PlayEpisode\\('(\\d+)'\\)", getBody(url)).map(m -> Long.valueOf(m.group(1)));
+        Optional<Long> playEpisodeId = getMatcher("PlayEpisode\\('(\\d+)'\\)", getBody(url))
+                .map(m -> Long.valueOf(m.group(1)));
+        if (playEpisodeId.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(FetchLfItem.builder()
+                .lfItem(item)
+                .playEpisodeId(playEpisodeId.get())
+                .build());
     }
 
-    private Optional<String> parseSearch(Long id) {
-        String url = "https://www.lostfilmtv.site/v_search.php?a=" + id;
-        return getMatcher("url=(\\s*\\S+)\"", getBody(url)).map(m -> m.group(1));
+    private Optional<FetchLfItem> parseSearch(FetchLfItem fetchLfItem) {
+        String url = "https://www.lostfilmtv.site/v_search.php?a=" + fetchLfItem.getPlayEpisodeId();
+        Optional<String> tracktorUrl = getMatcher("url=(\\s*\\S+)\"", getBody(url)).map(m -> m.group(1));
+        if (tracktorUrl.isEmpty()) {
+            return Optional.empty();
+        }
+        fetchLfItem.setTracktorUrl(tracktorUrl.get());
+        return Optional.of(fetchLfItem);
     }
 
-    private LFParsedItem parseSearchPage(String url) {
-        String body = getBody(url);
+    private LFParsedItem parseSearchPage(FetchLfItem fetchLfItem) {
+        String body = getBody(fetchLfItem.getTracktorUrl());
         Document document = Jsoup.parse(body);
         String itemName = document.getElementsByClass("inner-box--text").iterator().next().text();
         Elements elements = document.getElementsByClass("inner-box--item");
-        List<LFParsedItemTorrents> torrents = new ArrayList<>(3);
+        List<LFParsedItemTorrent> torrents = new ArrayList<>(3);
         LFParsedItem item = LFParsedItem.builder()
                 .name(itemName)
                 .torrents(torrents)
                 .created(Instant.now())
+                .pubDate(fetchLfItem.getLfItem().getPubDate().toInstant())
+                .originUrl(fetchLfItem.getLfItem().getLink())
                 .build();
         for (Element element : elements) {
             String torrentName = element.getElementsByClass("inner-box--link main").iterator().next().text();
             String torrentQuality = element.getElementsByClass("inner-box--label").iterator().next().text();
             String torrentUrl = element.getElementsByClass("inner-box--link sub").iterator().next().text();
             byte[] torrentFile = getBodyBytes(torrentUrl);
-            torrents.add(LFParsedItemTorrents.builder()
+            torrents.add(LFParsedItemTorrent.builder()
                     .name(torrentName)
                     .quality(torrentQuality)
                     .torrentUrl(torrentUrl)
@@ -124,6 +136,14 @@ public class TorrentFileFetcher {
 
     private static class LFParseEmptyBody extends RuntimeException {
 
+    }
+
+    @Data
+    @Builder
+    private static class FetchLfItem {
+        private LFItem lfItem;
+        private Long playEpisodeId;
+        private String tracktorUrl;
     }
 
 }

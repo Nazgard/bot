@@ -1,4 +1,4 @@
-package dev.makarov.bot.lostfilm;
+package dev.makarov.bot.lostfilm.persistance;
 
 import dev.makarov.bot.lostfilm.dto.LFParsedItem;
 

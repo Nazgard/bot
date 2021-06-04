@@ -1,4 +1,4 @@
-package dev.makarov.bot.lostfilm.entity;
+package dev.makarov.bot.lostfilm.persistance.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

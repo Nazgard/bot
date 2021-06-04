@@ -1,4 +1,4 @@
-package dev.makarov.bot.lostfilm;
+package dev.makarov.bot.lostfilm.queue;
 
 import dev.makarov.bot.lostfilm.dto.LFItem;
 import org.springframework.stereotype.Service;
