@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -29,7 +28,7 @@ public class LFRssBot {
     //TODO убрать зависимость от репозитория
     private final LFEntryRepository repository;
 
-    @Scheduled(fixedDelay = 60_000)
+//    @Scheduled(fixedDelay = 60_000)
     public void refreshState() {
         try {
             ResponseEntity<String> response = restTemplate.exchange(URL, HttpMethod.GET, null, String.class);
