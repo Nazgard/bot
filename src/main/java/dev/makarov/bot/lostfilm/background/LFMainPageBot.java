@@ -40,9 +40,10 @@ public class LFMainPageBot {
             }
             String serialName = row.getElementsByClass("name-ru").text();
             String seriesNameRu = row.getElementsByClass("alpha").get(0).text();
+            String seriesNumber = row.getElementsByClass("left-part").text();
             String ruDateRaw = row.getElementsByClass("alpha").get(1).text().replace("Дата выхода Ru: ", "");
             queue.add(LFItem.builder()
-                    .title(serialName + ". " + seriesNameRu)
+                    .title(String.format("%s. %s (%s)", serialName, seriesNameRu, seriesNumber))
                     .pubDate(Date.from(LocalDate.parse(ruDateRaw, FORMATTER).atStartOfDay().toInstant(ZoneOffset.UTC)))
                     .link(link)
                     .build());

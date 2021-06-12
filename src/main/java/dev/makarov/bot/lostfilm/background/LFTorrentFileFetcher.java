@@ -79,11 +79,10 @@ public class LFTorrentFileFetcher {
     private LFParsedItem parseSearchPage(FetchLfItem fetchLfItem) {
         String body = getBody(fetchLfItem.getTracktorUrl());
         Document document = Jsoup.parse(body);
-        String itemName = document.getElementsByClass("inner-box--text").iterator().next().text();
         Elements elements = document.getElementsByClass("inner-box--item");
         List<LFParsedItemTorrent> torrents = new ArrayList<>(3);
         LFParsedItem item = LFParsedItem.builder()
-                .name(itemName)
+                .name(fetchLfItem.getLfItem().getTitle())
                 .torrents(torrents)
                 .created(Instant.now())
                 .pubDate(fetchLfItem.getLfItem().getPubDate().toInstant())
@@ -93,7 +92,9 @@ public class LFTorrentFileFetcher {
             String torrentName = element.getElementsByClass("inner-box--link main").iterator().next().text();
             String torrentQuality = element.getElementsByClass("inner-box--label").iterator().next().text();
             String torrentUrl = element.getElementsByClass("inner-box--link sub").iterator().next().text();
+            log.info("Downloading torrent {}", item.getName());
             byte[] torrentFile = getBodyBytes(torrentUrl);
+            log.info("Downloaded torrent {}", item.getName());
             torrents.add(LFParsedItemTorrent.builder()
                     .name(torrentName)
                     .quality(torrentQuality)
