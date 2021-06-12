@@ -34,7 +34,10 @@ public class LFWebServiceImpl implements LFWebService {
     @Override
     public LFRss getRss(String quality) {
         Page<LFEntry> entries = repository
-                .findAll(PageRequest.of(0, 100, Sort.by(Sort.Order.desc("pubDate"))));
+                .findAll(PageRequest.of(0, 100, Sort.by(
+                        Sort.Order.desc("pubDate"),
+                        Sort.Order.desc("created")
+                )));
         List<LFRssChannelItem> items = new ArrayList<>();
         Instant lastBuildDate = null;
         for (LFEntry entry : entries) {
