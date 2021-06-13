@@ -19,7 +19,9 @@ import org.springframework.stereotype.Service;
 import java.io.FileNotFoundException;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -62,8 +64,9 @@ public class LFWebServiceImpl implements LFWebService {
                         return LFRssChannelItem.builder()
                                 .title(name)
                                 .link(configuration.getDomain() + "/lostfilm/rss/torrent/" + t.getGridFsObjectId())
-                                .pubDate(entry.getCreated())
+                                .pubDate(Date.from(entry.getCreated()))
                                 .originalUrl(entry.getOriginUrl())
+                                .uid(entry.getId().toString())
                                 .build();
                     })
                     .collect(Collectors.toList()));
@@ -73,7 +76,7 @@ public class LFWebServiceImpl implements LFWebService {
                 .channel(LFRssChannel.builder()
                         .title("Свежачок от LostFilm.TV")
                         .link("https://www.lostfilm.tv/")
-                        .lastBuildDate(lastBuildDate)
+                        .lastBuildDate(Optional.ofNullable(lastBuildDate).map(Date::from).orElse(null))
                         .items(items)
                         .build())
                 .build();

@@ -1,5 +1,6 @@
 package dev.makarov.bot.lostfilm.web;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import lombok.AllArgsConstructor;
@@ -7,8 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -19,7 +20,8 @@ public class LFRssChannel {
 
     private String title;
     private String link;
-    private Instant lastBuildDate;
+    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="EEE, dd MMM yyyy HH:mm:ss Z", locale = "en")
+    private Date lastBuildDate;
 
     @Builder.Default
     @JacksonXmlProperty(localName = "item")
