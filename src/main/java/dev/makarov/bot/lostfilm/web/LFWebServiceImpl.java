@@ -1,7 +1,7 @@
 package dev.makarov.bot.lostfilm.web;
 
 import com.mongodb.client.gridfs.model.GridFSFile;
-import dev.makarov.bot.lostfilm.configuration.LFWebConfiguration;
+import dev.makarov.bot.configuration.WebConfiguration;
 import dev.makarov.bot.lostfilm.persistance.entity.LFEntry;
 import dev.makarov.bot.lostfilm.persistance.repository.LFEntryRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class LFWebServiceImpl implements LFWebService {
 
-    private final LFWebConfiguration configuration;
+    private final WebConfiguration configuration;
     private final LFEntryRepository repository;
     private final GridFsTemplate fsTemplate;
 
