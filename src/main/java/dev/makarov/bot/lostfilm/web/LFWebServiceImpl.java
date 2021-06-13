@@ -42,7 +42,7 @@ public class LFWebServiceImpl implements LFWebService {
         Instant lastBuildDate = null;
         for (LFEntry entry : entries) {
             if (lastBuildDate == null) {
-                lastBuildDate = entry.getPubDate();
+                lastBuildDate = entry.getCreated();
             }
             items.addAll(entry.getTorrents().stream()
                     .filter(t -> {
@@ -63,6 +63,7 @@ public class LFWebServiceImpl implements LFWebService {
                                 .title(name)
                                 .link(configuration.getDomain() + "/lostfilm/rss/torrent/" + t.getGridFsObjectId())
                                 .pubDate(entry.getPubDate())
+                                .receiveDate(entry.getCreated())
                                 .originalUrl(entry.getOriginUrl())
                                 .build();
                     })
