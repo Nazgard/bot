@@ -9,6 +9,7 @@ import org.springframework.boot.context.properties.ConstructorBinding;
 @ConfigurationProperties(prefix = "lostfilm")
 public class LFConfiguration {
 
+    private String domain;
     private String cookie;
 
 }

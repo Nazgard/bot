@@ -1,5 +1,6 @@
 package dev.makarov.bot.lostfilm.background;
 
+import dev.makarov.bot.lostfilm.configuration.LFConfiguration;
 import dev.makarov.bot.lostfilm.configuration.LFRestTemplate;
 import dev.makarov.bot.lostfilm.dto.LFItem;
 import dev.makarov.bot.lostfilm.dto.LFParsedItem;
@@ -39,6 +40,7 @@ public class LFTorrentFileFetcher {
     private final LFRestTemplate restTemplate;
     private final LFItemQueue inputQueue;
     private final LFParsedItemQueue outputQueue;
+    private final LFConfiguration configuration;
 
     @SneakyThrows
     @Scheduled(fixedDelay = 100)
@@ -67,7 +69,7 @@ public class LFTorrentFileFetcher {
     }
 
     private Optional<FetchLfItem> parseSearch(FetchLfItem fetchLfItem) {
-        String url = "https://www.lostfilmtv.site/v_search.php?a=" + fetchLfItem.getPlayEpisodeId();
+        String url = configuration.getDomain() + "/v_search.php?a=" + fetchLfItem.getPlayEpisodeId();
         Optional<String> tracktorUrl = getMatcher("url=(\\s*\\S+)\"", getBody(url)).map(m -> m.group(1));
         if (tracktorUrl.isEmpty()) {
             return Optional.empty();

@@ -1,5 +1,6 @@
 package dev.makarov.bot.lostfilm.background;
 
+import dev.makarov.bot.lostfilm.configuration.LFConfiguration;
 import dev.makarov.bot.lostfilm.dto.LFItem;
 import dev.makarov.bot.lostfilm.persistance.repository.LFEntryRepository;
 import dev.makarov.bot.lostfilm.queue.LFItemQueue;
@@ -28,11 +29,12 @@ public class LFMainPageBot {
     private final LFItemQueue queue;
     //TODO убрать зависимость от репозитория
     private final LFEntryRepository repository;
+    private final LFConfiguration configuration;
 
     @SneakyThrows
     @Scheduled(fixedDelay = 60_000)
     public void fetch() {
-        Document d = Jsoup.parse(new URL("https://www.lostfilmtv.site/new/"), 30_000);
+        Document d = Jsoup.parse(new URL( configuration.getDomain() + "/new/"), 30_000);
         for (Element row : d.getElementsByClass("row")) {
             String link = "https://www.lostfilmtv.uno/mr" + row.getElementsByTag("a").get(0).attributes().get("href");
             if (repository.existsByOriginUrl(link)) {
