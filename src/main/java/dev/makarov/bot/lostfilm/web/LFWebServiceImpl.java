@@ -62,8 +62,7 @@ public class LFWebServiceImpl implements LFWebService {
                         return LFRssChannelItem.builder()
                                 .title(name)
                                 .link(configuration.getDomain() + "/lostfilm/rss/torrent/" + t.getGridFsObjectId())
-                                .pubDate(entry.getPubDate())
-                                .receiveDate(entry.getCreated())
+                                .pubDate(entry.getCreated())
                                 .originalUrl(entry.getOriginUrl())
                                 .build();
                     })

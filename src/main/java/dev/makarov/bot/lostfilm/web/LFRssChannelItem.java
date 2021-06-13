@@ -16,7 +16,6 @@ public class LFRssChannelItem {
     private String title;
     private String link;
     private Instant pubDate;
-    private Instant receiveDate;
     private String originalUrl;
 
 }
