@@ -1,7 +1,6 @@
 package dev.makarov.bot.telegram;
 
 import dev.makarov.bot.telegram.datecalc.DateCalculateService;
-import dev.makarov.bot.lostfilm.background.LFRssBot;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,7 +21,6 @@ import static org.telegram.telegrambots.meta.api.objects.EntityType.BOTCOMMAND;
 public class Router {
 
     private final DateCalculateService calcService;
-    private final LFRssBot rssBot;
 
     public List<SendMessage> route(Update update) {
         List<SendMessage> apiMethods = new ArrayList<>();
